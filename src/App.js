@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import { CardList } from './components/card-list/card-list.component';
+import { SearchBox } from './components/search-box/search-box.component';
 
 import './App.css';
 
@@ -9,7 +10,8 @@ class App extends Component {
     super();
 
     this.state = {
-      monsters: []
+      monsters: [],
+      searchField: ''
     };
   }
 
@@ -20,15 +22,21 @@ class App extends Component {
   }
 
   render () {
+    const { monsters, searchField } = this.state; // questa cosa è chiamata 'destrutturazione' o 'Destructuring' !!!
+    const filteredMonsters = monsters.filter((monster) =>
+      monster.name.toLowerCase().includes(searchField.toLowerCase()) // metodo per filtrare la ricerca!!
+    );
+
     return (
       <div className="App">
-        <CardList name="Matteo">
-          {this.state.monsters.map((monster, index) => (
-            <h1 key={index}>
-              {monster.name}
-            </h1>
-          ))}
-        </CardList>
+        <SearchBox
+          placeholder='Search Monsters' 
+          handleChange={(e) => {
+            this.setState({ searchField: e.target.value }, () => 
+              console.log(this.state) // questa è una callback -> è importante per dare sincronicità ad una funzione!!!
+            )}}
+        />
+        <CardList monsters={filteredMonsters} />
       </div>
     );
   }
